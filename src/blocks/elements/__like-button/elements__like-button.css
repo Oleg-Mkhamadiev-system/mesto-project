@@ -1,0 +1,16 @@
+.elements__like-button {
+  width: 22px;
+  height: 19px;
+  background-image: url(../../../images/smile.svg);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-color: #fff;
+  border: 0;
+  padding: 0;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
+}
+
+.elements__like-button:hover {
+  opacity: 0.5;
+}
