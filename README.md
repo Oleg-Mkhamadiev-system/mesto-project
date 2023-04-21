@@ -17,4 +17,4 @@
 * Функциональность разработана на классах, проект собран сборщиком вебпак
 
 #### GitHub Pages
-* [Ссылка на публичный репозиторий](https://oleg-mkhamadiev-system.github.io/mesto/)
+* [Ссылка на публичный репозиторий](https://oleg-mkhamadiev-system.github.io/mesto-project/)
