@@ -1,17 +1,20 @@
 
 import {
   nameInput,
+  aboutInput,
   namePlaceInput,
   linkImageInput,
-  jobInput,
   profileTitle,
   profileSubtitle,
   popupImageContent,
   popupFigcaption,
   popupProfile,
   popupPlace,
-  popupImages
+  popupImages,
+  cardsContainer,
+  formNewCardElement
 } from "./utils.js";
+import { createCard } from "./card.js";
 
 function openPopup(popupElement) {
   popupElement.classList.add("popup_opened");
@@ -27,7 +30,7 @@ function closePopup(popupElement) {
 
 function openEditPopup() {
   nameInput.value = profileTitle.textContent;
-  jobInput.value = profileSubtitle.textContent;
+  aboutInput.value = profileSubtitle.textContent;
   openPopup(popupProfile);
 }
 
@@ -37,15 +40,18 @@ function openAddPopup() {
 
 function handleSubmitEditForm(evt) {
   evt.preventDefault();
-  profileTitle.textContent = namePlaceInput.value;
-  profileSubtitle.textContent = linkImageInput.value;
+  profileTitle.textContent = nameInput.value;
+  profileSubtitle.textContent = aboutInput.value;
   closePopup(popupProfile);
 }
 
 // функция добавления карточек
 function handleSubmitAddForm(evt) {
   evt.preventDefault();
-  const data = { name: namePlaceInput.value, link: linkImageInput.value };
+  const data = {
+    name: namePlaceInput.value,
+    link: linkImageInput.value
+  };
   const newCard = createCard(data);
   cardsContainer.prepend(newCard);
   closePopup(popupPlace);

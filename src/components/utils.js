@@ -16,7 +16,7 @@ export const popupButtonCloseList = document.querySelectorAll('.popup__close-but
 // форма добавления данных
 export const formEditElement = popupProfile.querySelector('.popup__form');
 export const nameInput = popupProfile.querySelector('.popup__input_data_name');
-export const jobInput = popupProfile.querySelector('.popup__input_data_profession');
+export const aboutInput = popupProfile.querySelector('.popup__input_data_profession');
 export const profileTitle = document.querySelector('.profile__title');
 export const profileSubtitle = document.querySelector('.profile__subtitle');
 export const profileAvatar = document.querySelector('.profile__avatar');
