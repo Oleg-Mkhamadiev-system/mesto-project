@@ -4,38 +4,71 @@ import {
   popupButtonCloseList,
   formEditElement,
   formNewCardElement,
+  formAvatarElement,
   popupElementList,
   cardsContainer,
   validationConfig,
+  profileAvatarButton,
   initialCards
+  //initialCards
 } from "./utils.js";
 import { enableValidation } from "./validate.js";
 
 import { createCard } from "./card.js";
-import { openEditPopup,
+import {
+  openEditPopup,
   openAddPopup,
+  openAddAvatarPopup,
   closePopup,
   handleSubmitEditForm,
   handleSubmitAddForm,
+  handleSubmitAddAvatar,
+  setUserInfo,
+  setUserAvatar
 } from './modal.js';
+
+import { editUserAvatar,
+  setUserInfoProfile,
+  getUserInfo,
+  getInitialCards  } from "./api.js";
 
 import "../pages/index.css";
 
-initialCards.forEach((data) => {
-  const newCard = createCard(data);
-  cardsContainer.prepend(newCard);
-});
+
+
+/* function getInitialCards(initialCards) {
+    // обрабатываем результат
+
+    } */
+
+  // промис отрисовывает карточки с сервера
+// и данные пользователя
+Promise.all([getUserInfo(), getInitialCards()])
+  .then(([profileUser, initialCards]) => {
+    setUserInfo(profileUser);
+    setUserAvatar(profileUser);
+
+    initialCards.forEach((result) => {
+      const newCard = createCard(result.name, result.link, result.userId,
+        result.ownerId);
+        cardsContainer.prepend(newCard);
+      })
+    })
+  .catch((err) => {
+    console.log(err);
+  });
 
 // обработчики на открытие попапов
 profileEditButton.addEventListener("click", openEditPopup);
 profileAddButton.addEventListener("click", openAddPopup);
+profileAvatarButton.addEventListener("click", openAddAvatarPopup);
 
 // обработчики на сабмитные кнопки
 formEditElement.addEventListener("submit", handleSubmitEditForm);
 formNewCardElement.addEventListener("submit", handleSubmitAddForm);
+formAvatarElement.addEventListener("sumbit", handleSubmitAddAvatar);
 
 // обработчик на закрытие попапов по клику мыши на крестик
-
 popupButtonCloseList.forEach((btn) => {
   const popup = btn.closest(".popup");
   btn.addEventListener("click", () => closePopup(popup));

@@ -27,6 +27,8 @@ export const formAvatarElement = popupAvatar.querySelector('.popup__form');
 export const formConfirmElement = popupDeleteConfirm.querySelector('.popup__form');
 export const namePlaceInput = popupPlace.querySelector('.popup__input_data_place');
 export const linkImageInput = popupPlace.querySelector('.popup__input_link_image');
+
+export const avatarImageInput = popupAvatar.querySelector('.popup__input_link_avatar');
 export const cardText = document.querySelector('.elements__card-text');
 export const cardImage = document.querySelector('.elements__card-image');
 
