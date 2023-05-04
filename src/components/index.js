@@ -33,7 +33,7 @@ import { editUserAvatar,
   getInitialCards  } from "./api.js";
 
 import "../pages/index.css";
-
+let userId;
 
 
 /* function getInitialCards(initialCards) {
@@ -47,10 +47,11 @@ Promise.all([getUserInfo(), getInitialCards()])
   .then(([profileUser, initialCards]) => {
     setUserInfo(profileUser);
     setUserAvatar(profileUser);
+    userId = profileUser._id;
 
     initialCards.forEach((result) => {
       const newCard = createCard(result.name, result.link, result.userId,
-        result.ownerId);
+        result.owner._id, result._id, result.likes);
         cardsContainer.prepend(newCard);
       })
     })

@@ -2,7 +2,7 @@ import { openPopupImages } from "./modal.js";
 import { deleteCardLike, addlikeCard, deleteCard } from "./api.js";
 
 // функция создания карточек
-function createCard(name, link, userId, ownerId) {
+function createCard(name, link, userId, ownerId, id, likes) {
   //const { link, name } = cardData;
 
   const templateElement = document.querySelector(".template__elements").content;
@@ -22,14 +22,19 @@ function createCard(name, link, userId, ownerId) {
   });
 
   const buttonLike = newCardElement.querySelector(".elements__like-button");
+  // нахожу элемент подсчета лайков
+  const likeCount = newCardElement.querySelector(".elements__like-number");
+  // передаю в свойство массива лайков цифру
+  likeCount.textContent = likes.length;
+
+
   buttonLike.addEventListener("click", () => {
+    for(let i = 0; i < likes.length; i++)
+    if (likes[i]._id === userId) {
+      buttonLike.classList.toggle("elements__like-button_active");
+    }
     handleCardLike(newCardElement);
   });
-
-  // нахожу элемент подсчета лайков
-  //const likeCount = newCardElement.querySelector(".elements__like-number");
-  // передаю в свойство массива лайков цифру
-  //countLikes.textContent = data.likes.length;
 
   const cardDeleteButton = newCardElement.querySelector(
     ".elements__delete-button"
@@ -39,25 +44,31 @@ function createCard(name, link, userId, ownerId) {
   if (userId !== ownerId) {
     cardDeleteButton.remove();
   }
+
   cardDeleteButton.addEventListener("click", (evt) => {
     const cardElements = evt.target.closest(".elements__card");
-    cardElements.remove();
+    userId = id;
+    deleteCard(userId)
+    .then(() => {
+      cardElements.remove();
+    }).catch((err) => {
+      console.log(err);
+    })
+
   });
 
   return newCardElement;
 }
 
 function countLikes(newLike) {
-  const likeCount = newCardElement.querySelector(".elements__like-number");
   const likes = newLike;
-  likeCount.textContent = likes.length;
+  countLikes.textContent = likes.length;
 }
 
 function setLike() {
   buttonLike.classList.add("elements__like-button_active");
 }
 
-// метод удаления лайка
 function removeLike() {
   buttonLike.classList.remove("elements__like-button_active");
 }
@@ -68,23 +79,23 @@ function toggleLikeState() {
 
 function handleCardLike(newCardElement) {
   if (newCardElement.like) {
-    deleteCardLike(newCardElement._id)
-      .then((data) => {
-        countLikes(data.likes);
-        // меняю состояние лайков
-        toggleLikeState();
-        removeLike();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  } else {
     addlikeCard(newCardElement._id)
       .then((data) => {
         countLikes(data.likes);
         // меняю состояние лайков
         toggleLikeState();
         setLike();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  } else {
+    deleteCardLike(newCardElement._id)
+      .then((data) => {
+        countLikes(data.likes);
+        // меняю состояние лайков
+        toggleLikeState();
+        removeLike();
       })
       .catch((err) => {
         console.log(err);

@@ -120,7 +120,24 @@ async function handleSubmitAddAvatar(evt) {
   }
 }
 
-function handleSubmitAddForm(evt) {
+async function handleSubmitAddForm(evt) {
+  evt.preventDefault();
+  try {
+    const newCard = await createNewCard({
+      name: namePlaceInput.value,
+      link: linkImageInput.value,
+    });
+    cardsContainer.prepend(createCard(newCard));
+      const button = evt.submitter;
+      button.disabled = true;
+      button.classList.add("popup__save-button_disabled");
+      closePopup(popupPlace);
+      formNewCardElement.reset();
+  } catch (err) {
+    console.log(err);
+  }
+}
+/* function handleSubmitAddForm(evt) {
   evt.preventDefault();
   createNewCard({
     name: namePlaceInput.value,
@@ -143,7 +160,7 @@ function handleSubmitAddForm(evt) {
     .catch((err) => {
       console.log(err);
     });
-}
+}*/
 
 // функция открытия попапа картинки
 function openPopupImages(name, link) {
