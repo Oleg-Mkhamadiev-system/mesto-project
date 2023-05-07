@@ -9,8 +9,10 @@ import {
   cardsContainer,
   validationConfig,
   profileAvatarButton,
-  initialCards
-  //initialCards
+  nameInput,
+  aboutInput,
+  popupProfile,
+  submitButtonEdit
 } from "./utils.js";
 import { enableValidation } from "./validate.js";
 
@@ -20,38 +22,36 @@ import {
   openAddPopup,
   openAddAvatarPopup,
   closePopup,
-  handleSubmitEditForm,
   handleSubmitAddForm,
-  handleSubmitAddAvatar,
   setUserInfo,
-  setUserAvatar
+  setUserAvatar,
+  renderLoading,
+  disableButton
 } from './modal.js';
 
-import { editUserAvatar,
-  setUserInfoProfile,
+import {
   getUserInfo,
-  getInitialCards  } from "./api.js";
+  getInitialCards,
+  editUserAvatar,
+  setUserInfoProfile,
+} from "./api.js";
 
 import "../pages/index.css";
-let userId;
+export let ownerId; // объявляю глобально переменную
 
 
-/* function getInitialCards(initialCards) {
-    // обрабатываем результат
-
-    } */
-
-  // промис отрисовывает карточки с сервера
+// промис отрисовывает карточки с сервера
 // и данные пользователя
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([profileUser, initialCards]) => {
     setUserInfo(profileUser);
     setUserAvatar(profileUser);
-    userId = profileUser._id;
+    ownerId = profileUser._id;
 
     initialCards.forEach((result) => {
-      const newCard = createCard(result.name, result.link, result.userId,
-        result.owner._id, result._id, result.likes);
+      const newCard = createCard(
+        result.name, result.link, result._id,
+        result.owner._id, result.likes);
         cardsContainer.prepend(newCard);
       })
     })
@@ -59,6 +59,41 @@ Promise.all([getUserInfo(), getInitialCards()])
     console.log(err);
   });
 
+  // колбэк редактирования аватара
+async function handleSubmitAddAvatar(evt) {
+  evt.preventDefault();
+  renderLoading(true, profileAvatarButton)
+  try {
+    const profileUser = await editUserAvatar({
+      avatar: avatarImageInput.value,
+    });
+    setUserAvatar(profileUser);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    disableButton(validationConfig, profileAvatarButton);
+    renderLoading(false, profileAvatarButton);
+  }
+}
+
+// функция добавления информации о пользователе
+async function handleSubmitEditForm(evt) {
+  evt.preventDefault();
+  renderLoading(true, profileEditButton);
+  try {
+    const profileUser = await setUserInfoProfile({
+      name: nameInput.value,
+      about: aboutInput.value,
+    });
+    setUserInfo(profileUser);
+    closePopup(popupProfile);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    disableButton(validationConfig, submitButtonEdit);
+    renderLoading(false, profileEditButton);
+  }
+}
 // обработчики на открытие попапов
 profileEditButton.addEventListener("click", openEditPopup);
 profileAddButton.addEventListener("click", openAddPopup);

@@ -2,7 +2,7 @@ import { openPopupImages } from "./modal.js";
 import { deleteCardLike, addlikeCard, deleteCard } from "./api.js";
 
 // функция создания карточек
-function createCard(name, link, userId, ownerId, id, likes) {
+function createCard(name, link, id, ownerId, likes) {
   //const { link, name } = cardData;
 
   const templateElement = document.querySelector(".template__elements").content;
@@ -27,13 +27,29 @@ function createCard(name, link, userId, ownerId, id, likes) {
   // передаю в свойство массива лайков цифру
   likeCount.textContent = likes.length;
 
-
-  buttonLike.addEventListener("click", () => {
-    for(let i = 0; i < likes.length; i++)
-    if (likes[i]._id === userId) {
-      buttonLike.classList.toggle("elements__like-button_active");
+  buttonLike.addEventListener("click", (evt) => {
+    buttonLike.dataset.id = id; // устанавливаю айди для кнопки лайка
+    if (evt.target.classList.toggle("elements__like-button_active")) {
+      addlikeCard(id)
+        .then(() => {
+          // обновляю количество лайков, увеличивая массив лайков
+          likeCount.textContent =+ likeCount.textContent + 1;
+          buttonLike.classList.add("elements__like-button_active");
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    } else {
+      deleteCardLike(id)
+        .then(() => {
+          // обновляю количество лайков, уменьшая массив лайков
+          likeCount.textContent =+ likeCount.textContent - 1;
+          buttonLike.classList.remove("elements__like-button_active");
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     }
-    handleCardLike(newCardElement);
   });
 
   const cardDeleteButton = newCardElement.querySelector(
@@ -41,14 +57,14 @@ function createCard(name, link, userId, ownerId, id, likes) {
   );
 
   // логика удаления корзинки карточки
-  if (userId !== ownerId) {
+  if (id !== ownerId) {
     cardDeleteButton.remove();
   }
 
   cardDeleteButton.addEventListener("click", (evt) => {
     const cardElements = evt.target.closest(".elements__card");
-    userId = id;
-    deleteCard(userId)
+    cardElements.dataset.id = id;
+    deleteCard(id)
     .then(() => {
       cardElements.remove();
     }).catch((err) => {
@@ -60,47 +76,5 @@ function createCard(name, link, userId, ownerId, id, likes) {
   return newCardElement;
 }
 
-function countLikes(newLike) {
-  const likes = newLike;
-  countLikes.textContent = likes.length;
-}
-
-function setLike() {
-  buttonLike.classList.add("elements__like-button_active");
-}
-
-function removeLike() {
-  buttonLike.classList.remove("elements__like-button_active");
-}
-
-function toggleLikeState() {
-  const like = !like;
-}
-
-function handleCardLike(newCardElement) {
-  if (newCardElement.like) {
-    addlikeCard(newCardElement._id)
-      .then((data) => {
-        countLikes(data.likes);
-        // меняю состояние лайков
-        toggleLikeState();
-        setLike();
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-  } else {
-    deleteCardLike(newCardElement._id)
-      .then((data) => {
-        countLikes(data.likes);
-        // меняю состояние лайков
-        toggleLikeState();
-        removeLike();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-}
 
 export { createCard };

@@ -15,9 +15,12 @@ import {
   formNewCardElement,
   profileAvatar,
   avatarImageInput,
+  submitButtonEdit,
+  submitButtonCreateImage
 } from "./utils.js";
 import { createCard } from "./card.js";
-import { setUserInfoProfile, editUserAvatar, createNewCard } from "./api.js";
+import { createNewCard } from "./api.js";
+import { id } from "./index.js";
 
 function openPopup(popupElement) {
   popupElement.classList.add("popup_opened");
@@ -74,21 +77,6 @@ function setUserInfo(data) {
   profileSubtitle.textContent = data.about;
 }
 
-// функция добавления информации о пользователе
-async function handleSubmitEditForm(evt) {
-  evt.preventDefault();
-  try {
-    const profileUser = await setUserInfoProfile({
-      name: nameInput.value,
-      about: aboutInput.value,
-    });
-    setUserInfo(profileUser);
-    closePopup(popupProfile);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 // колбэк редактирования аватара
 /* function handleSubmitAddAvatar(evt) {
   evt.preventDefault();
@@ -107,20 +95,10 @@ function setUserAvatar(data) {
   profileAvatar.src = data.avatar;
 }
 
-// колбэк редактирования аватара
-async function handleSubmitAddAvatar(evt) {
-  evt.preventDefault();
-  try {
-    const profileUser = await editUserAvatar({
-      avatar: avatarImageInput.value,
-    });
-    setUserAvatar(profileUser);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function handleSubmitAddForm(evt) {
+/* function getOwnerId() {
+  return owner._id;
+} */
+/* async function handleSubmitAddForm(evt) {
   evt.preventDefault();
   try {
     const newCard = await createNewCard({
@@ -136,8 +114,14 @@ async function handleSubmitAddForm(evt) {
   } catch (err) {
     console.log(err);
   }
+} */
+
+function disableButton(validationConfig, button) {
+  button.disabled = true;
+  button.classList.add(validationConfig.inactiveButtonClass);
 }
-/* function handleSubmitAddForm(evt) {
+
+function handleSubmitAddForm(evt) {
   evt.preventDefault();
   createNewCard({
     name: namePlaceInput.value,
@@ -147,20 +131,31 @@ async function handleSubmitAddForm(evt) {
       const newCard = createCard(
         data.name,
         data.link,
-        data.userId,
-        data.ownerId
+        data._id,
+        data.owner._id,
+        data.likes
       );
-      cardsContainer.prepend(createCard(newCard));
-      closePopup(popupPlace);
-      const button = evt.submitter;
-      button.disabled = true;
-      button.classList.add("popup__save-button_disabled");
-      formNewCardElement.reset();
+      cardsContainer.prepend(newCard);
     })
     .catch((err) => {
       console.log(err);
-    });
-}*/
+    })
+    .finally(() => {
+      closePopup(popupPlace);
+      formNewCardElement.reset();
+      //disableButton(validationConfig, submitButtonCreateImage);
+    })
+}
+
+export function renderLoading(isLoading, submitButton) {
+  if (isLoading) {
+    submitButton.textContent = 'Сохранение';
+  }
+  else {
+    submitButtonEdit.textContent = 'Сохранить';
+    submitButtonCreateImage.textContent = 'Создать';
+  }
+}
 
 // функция открытия попапа картинки
 function openPopupImages(name, link) {
@@ -184,9 +179,8 @@ export {
   openAddAvatarPopup,
   closePopup,
   openPopupImages,
-  handleSubmitEditForm,
   handleSubmitAddForm,
-  handleSubmitAddAvatar,
+  disableButton,
   setUserInfo,
-  setUserAvatar,
+  setUserAvatar
 };
