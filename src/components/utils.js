@@ -26,6 +26,7 @@ export const profileAvatar = document.querySelector('.profile__avatar');
 export const formNewCardElement = popupPlace.querySelector('.popup__form');
 export const submitButtonCreateImage = formNewCardElement.querySelector('.popup__save-button');
 export const formAvatarElement = popupAvatar.querySelector('.popup__form');
+export const submitButtonAvatar = formAvatarElement.querySelector('.popup__save-button');
 export const formConfirmElement = popupDeleteConfirm.querySelector('.popup__form');
 export const namePlaceInput = popupPlace.querySelector('.popup__input_data_place');
 export const linkImageInput = popupPlace.querySelector('.popup__input_link_image');

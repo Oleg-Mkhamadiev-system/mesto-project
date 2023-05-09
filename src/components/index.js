@@ -16,7 +16,10 @@ import {
   submitButtonCreateImage,
   namePlaceInput,
   linkImageInput,
+  avatarImageInput,
   popupPlace,
+  popupAvatar,
+  submitButtonAvatar,
 } from "./utils.js";
 import { enableValidation } from "./validate.js";
 
@@ -84,32 +87,33 @@ function handleSubmitAddForm(evt) {
         data.owner._id
       );
       cardsContainer.prepend(newCard);
+      closePopup(popupPlace);
+      formNewCardElement.reset();
+      disableButton(submitButtonCreateImage);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       renderLoading(false, submitButtonCreateImage);
-      closePopup(popupPlace);
-      formNewCardElement.reset();
-      disableButton(submitButtonCreateImage);
     });
 }
 
 // колбэк редактирования аватара
 async function handleSubmitAddAvatar(evt) {
   evt.preventDefault();
-  renderLoading(true, submitButtonEdit);
+  renderLoading(true, submitButtonAvatar);
   try {
     const profileUser = await editUserAvatar({
       avatar: avatarImageInput.value,
-    });
+  });
     setUserAvatar(profileUser);
+    closePopup(popupAvatar);
+    disableButton(submitButtonAvatar);
   } catch (err) {
     console.log(err);
   } finally {
     renderLoading(false, submitButtonEdit);
-    disableButton(submitButtonEdit);
   }
 }
 
@@ -123,12 +127,12 @@ async function handleSubmitEditForm(evt) {
       about: aboutInput.value,
     });
     setUserInfo(profileUser);
+    closePopup(popupProfile);
+    disableButton(submitButtonEdit);
   } catch (err) {
     console.log(err);
   } finally {
     renderLoading(false, submitButtonEdit);
-    closePopup(popupProfile);
-    disableButton(submitButtonEdit);
   }
 }
 
@@ -140,7 +144,7 @@ profileAvatarButton.addEventListener("click", openAddAvatarPopup);
 // обработчики на сабмитные кнопки
 formEditElement.addEventListener("submit", handleSubmitEditForm);
 formNewCardElement.addEventListener("submit", handleSubmitAddForm);
-formAvatarElement.addEventListener("sumbit", handleSubmitAddAvatar);
+formAvatarElement.addEventListener("submit", handleSubmitAddAvatar);
 
 // обработчик на закрытие попапов по клику мыши на крестик
 popupButtonCloseList.forEach((btn) => {

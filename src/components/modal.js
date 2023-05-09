@@ -12,6 +12,7 @@ import {
   profileAvatar,
   avatarImageInput,
   submitButtonEdit,
+  submitButtonAvatar,
   submitButtonCreateImage,
 } from "./utils.js";
 
@@ -62,6 +63,7 @@ function renderLoading(isLoading, button) {
     button.textContent = "Сохранение...";
   } else {
     submitButtonEdit.textContent = "Сохранить";
+    submitButtonAvatar.textContent = "Сохранить";
     submitButtonCreateImage.textContent = "Создать";
   }
 }

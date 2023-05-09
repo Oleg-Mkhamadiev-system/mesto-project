@@ -29,28 +29,34 @@ function createCard(name, link, id, ownerId, likes, myId) {
 
   buttonLike.addEventListener("click", (evt) => {
     buttonLike.dataset.id = id; // устанавливаю айди для кнопки лайка
-    if (evt.target.classList.toggle("elements__like-button_active")) {
-      addlikeCard(id)
-        .then(() => {
-          // обновляю количество лайков, увеличивая массив лайков
-          likeCount.textContent = +likeCount.textContent + 1;
-          buttonLike.classList.add("elements__like-button_active");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
+    if (evt.target.classList.contains("elements__like-button_active")) {
       deleteCardLike(id)
         .then(() => {
           // обновляю количество лайков, уменьшая массив лайков
-          likeCount.textContent = +likeCount.textContent - 1;
+          likeCount.textContent = --likes.length;
           buttonLike.classList.remove("elements__like-button_active");
         })
         .catch((err) => {
           console.log(err);
         });
-    }
-  });
+    } else {
+      addlikeCard(id)
+        .then(() => {
+          // обновляю количество лайков, увеличивая массив лайков
+          likeCount.textContent = ++likes.length;
+          buttonLike.classList.add("elements__like-button_active");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
+    });
+
+    // крашу свои лайки в черный цвет при получении от сервера
+    for (let i = 0; i < likes.length; i++)
+      if (likes[i]._id === myId) {
+        buttonLike.classList.add("elements__like-button_active")
+      }
 
   const cardDeleteButton = newCardElement.querySelector(
     ".elements__delete-button"
