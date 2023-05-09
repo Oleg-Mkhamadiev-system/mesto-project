@@ -2,7 +2,7 @@ import { openPopupImages } from "./modal.js";
 import { deleteCardLike, addlikeCard, deleteCard } from "./api.js";
 
 // функция создания карточек
-function createCard(name, link, id, ownerId, likes) {
+function createCard(name, link, id, ownerId, likes, myId) {
   //const { link, name } = cardData;
 
   const templateElement = document.querySelector(".template__elements").content;
@@ -33,22 +33,22 @@ function createCard(name, link, id, ownerId, likes) {
       addlikeCard(id)
         .then(() => {
           // обновляю количество лайков, увеличивая массив лайков
-          likeCount.textContent =+ likeCount.textContent + 1;
+          likeCount.textContent = +likeCount.textContent + 1;
           buttonLike.classList.add("elements__like-button_active");
         })
         .catch((err) => {
           console.log(err);
-        })
+        });
     } else {
       deleteCardLike(id)
         .then(() => {
           // обновляю количество лайков, уменьшая массив лайков
-          likeCount.textContent =+ likeCount.textContent - 1;
+          likeCount.textContent = +likeCount.textContent - 1;
           buttonLike.classList.remove("elements__like-button_active");
         })
         .catch((err) => {
           console.log(err);
-        })
+        });
     }
   });
 
@@ -57,7 +57,7 @@ function createCard(name, link, id, ownerId, likes) {
   );
 
   // логика удаления корзинки карточки
-  if (id !== ownerId) {
+  if (myId !== ownerId) {
     cardDeleteButton.remove();
   }
 
@@ -65,16 +65,15 @@ function createCard(name, link, id, ownerId, likes) {
     const cardElements = evt.target.closest(".elements__card");
     cardElements.dataset.id = id;
     deleteCard(id)
-    .then(() => {
-      cardElements.remove();
-    }).catch((err) => {
-      console.log(err);
-    })
-
+      .then(() => {
+        cardElements.remove();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   return newCardElement;
 }
-
 
 export { createCard };

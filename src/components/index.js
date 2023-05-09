@@ -12,7 +12,11 @@ import {
   nameInput,
   aboutInput,
   popupProfile,
-  submitButtonEdit
+  submitButtonEdit,
+  submitButtonCreateImage,
+  namePlaceInput,
+  linkImageInput,
+  popupPlace,
 } from "./utils.js";
 import { enableValidation } from "./validate.js";
 
@@ -22,23 +26,22 @@ import {
   openAddPopup,
   openAddAvatarPopup,
   closePopup,
-  handleSubmitAddForm,
   setUserInfo,
   setUserAvatar,
   renderLoading,
-  disableButton
-} from './modal.js';
+  disableButton,
+} from "./modal.js";
 
 import {
   getUserInfo,
   getInitialCards,
+  createNewCard,
   editUserAvatar,
   setUserInfoProfile,
 } from "./api.js";
 
 import "../pages/index.css";
-export let ownerId; // объявляю глобально переменную
-
+export let myId; // объявляю глобально переменную
 
 // промис отрисовывает карточки с сервера
 // и данные пользователя
@@ -46,23 +49,57 @@ Promise.all([getUserInfo(), getInitialCards()])
   .then(([profileUser, initialCards]) => {
     setUserInfo(profileUser);
     setUserAvatar(profileUser);
-    ownerId = profileUser._id;
+    myId = profileUser._id;
 
     initialCards.forEach((result) => {
       const newCard = createCard(
-        result.name, result.link, result._id,
-        result.owner._id, result.likes);
-        cardsContainer.prepend(newCard);
-      })
-    })
+        result.name,
+        result.link,
+        result._id,
+        result.owner._id,
+        result.likes,
+        myId
+      );
+      cardsContainer.prepend(newCard);
+    });
+  })
   .catch((err) => {
     console.log(err);
   });
 
-  // колбэк редактирования аватара
+function handleSubmitAddForm(evt) {
+  evt.preventDefault();
+  renderLoading(true, submitButtonCreateImage);
+  createNewCard({
+    name: namePlaceInput.value,
+    link: linkImageInput.value,
+  })
+    .then((data) => {
+      const newCard = createCard(
+        data.name,
+        data.link,
+        data._id,
+        data.owner._id,
+        data.likes,
+        data.owner._id
+      );
+      cardsContainer.prepend(newCard);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(false, submitButtonCreateImage);
+      closePopup(popupPlace);
+      formNewCardElement.reset();
+      disableButton(submitButtonCreateImage);
+    });
+}
+
+// колбэк редактирования аватара
 async function handleSubmitAddAvatar(evt) {
   evt.preventDefault();
-  renderLoading(true, profileAvatarButton)
+  renderLoading(true, submitButtonEdit);
   try {
     const profileUser = await editUserAvatar({
       avatar: avatarImageInput.value,
@@ -71,29 +108,30 @@ async function handleSubmitAddAvatar(evt) {
   } catch (err) {
     console.log(err);
   } finally {
-    disableButton(validationConfig, profileAvatarButton);
-    renderLoading(false, profileAvatarButton);
+    renderLoading(false, submitButtonEdit);
+    disableButton(submitButtonEdit);
   }
 }
 
 // функция добавления информации о пользователе
 async function handleSubmitEditForm(evt) {
   evt.preventDefault();
-  renderLoading(true, profileEditButton);
+  renderLoading(true, submitButtonEdit);
   try {
     const profileUser = await setUserInfoProfile({
       name: nameInput.value,
       about: aboutInput.value,
     });
     setUserInfo(profileUser);
-    closePopup(popupProfile);
   } catch (err) {
     console.log(err);
   } finally {
-    disableButton(validationConfig, submitButtonEdit);
-    renderLoading(false, profileEditButton);
+    renderLoading(false, submitButtonEdit);
+    closePopup(popupProfile);
+    disableButton(submitButtonEdit);
   }
 }
+
 // обработчики на открытие попапов
 profileEditButton.addEventListener("click", openEditPopup);
 profileAddButton.addEventListener("click", openAddPopup);
