@@ -12,14 +12,14 @@ import {
   nameInput,
   aboutInput,
   popupProfile,
-  submitButtonEdit,
-  submitButtonCreateImage,
+  buttonEdit,
+  buttonCreateImage,
   namePlaceInput,
   linkImageInput,
   avatarImageInput,
   popupPlace,
   popupAvatar,
-  submitButtonAvatar,
+  buttonAvatar,
 } from "./constants.js";
 import { enableValidation } from "./validate.js";
 
@@ -33,8 +33,7 @@ import {
   setUserAvatar,
 } from "./modal.js";
 
-import { renderLoading,
-  disableButton } from "./utils.js";
+import { renderLoading, disableButton } from "./utils.js";
 
 import {
   getUserInfo,
@@ -73,7 +72,7 @@ Promise.all([getUserInfo(), getInitialCards()])
 
 function handleSubmitAddForm(evt) {
   evt.preventDefault();
-  renderLoading(true, submitButtonCreateImage);
+  renderLoading(true, buttonCreateImage);
   createNewCard({
     name: namePlaceInput.value,
     link: linkImageInput.value,
@@ -90,38 +89,38 @@ function handleSubmitAddForm(evt) {
       cardsContainer.prepend(newCard);
       closePopup(popupPlace);
       formNewCardElement.reset();
-      disableButton(submitButtonCreateImage);
+      disableButton(buttonCreateImage);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      renderLoading(false, submitButtonCreateImage);
+      renderLoading(false, buttonCreateImage);
     });
 }
 
 // колбэк редактирования аватара
 async function handleSubmitAddAvatar(evt) {
   evt.preventDefault();
-  renderLoading(true, submitButtonAvatar);
+  renderLoading(true, buttonAvatar);
   try {
     const profileUser = await editUserAvatar({
       avatar: avatarImageInput.value,
-  });
+    });
     setUserAvatar(profileUser);
     closePopup(popupAvatar);
-    disableButton(submitButtonAvatar);
+    disableButton(buttonAvatar);
   } catch (err) {
     console.log(err);
   } finally {
-    renderLoading(false, submitButtonEdit);
+    renderLoading(false, buttonEdit);
   }
 }
 
 // функция добавления информации о пользователе
 async function handleSubmitEditForm(evt) {
   evt.preventDefault();
-  renderLoading(true, submitButtonEdit);
+  renderLoading(true, buttonEdit);
   try {
     const profileUser = await setUserInfoProfile({
       name: nameInput.value,
@@ -129,11 +128,11 @@ async function handleSubmitEditForm(evt) {
     });
     setUserInfo(profileUser);
     closePopup(popupProfile);
-    disableButton(submitButtonEdit);
+    disableButton(buttonEdit);
   } catch (err) {
     console.log(err);
   } finally {
-    renderLoading(false, submitButtonEdit);
+    renderLoading(false, buttonEdit);
   }
 }
 

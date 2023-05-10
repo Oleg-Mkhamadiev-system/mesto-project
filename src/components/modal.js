@@ -71,8 +71,6 @@ export {
   openAddAvatarPopup,
   closePopup,
   openPopupImages,
-  disableButton,
   setUserInfo,
-  setUserAvatar,
-  renderLoading,
+  setUserAvatar
 };

@@ -9,12 +9,10 @@ export function disableButton(button) {
 }
 
 // функция кнопки загрузки
-export function renderLoading(isLoading, button) {
+export function renderLoading(isLoading, button, buttonText='Сохранить', loadingText='Сохранение...') {
   if (isLoading) {
-    button.textContent = "Сохранение...";
+    button.textContent = loadingText
   } else {
-    submitButtonEdit.textContent = "Сохранить";
-    submitButtonAvatar.textContent = "Сохранить";
-    submitButtonCreateImage.textContent = "Создать";
+    button.textContent = buttonText
   }
 }
