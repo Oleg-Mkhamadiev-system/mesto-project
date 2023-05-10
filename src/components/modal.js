@@ -10,11 +10,8 @@ import {
   popupImages,
   popupAvatar,
   profileAvatar,
-  avatarImageInput,
-  submitButtonEdit,
-  submitButtonAvatar,
-  submitButtonCreateImage,
-} from "./utils.js";
+  avatarImageInput
+} from "./constants.js";
 
 function openPopup(popupElement) {
   popupElement.classList.add("popup_opened");
@@ -50,22 +47,6 @@ function setUserInfo(data) {
 
 function setUserAvatar(data) {
   profileAvatar.src = data.avatar;
-}
-
-function disableButton(button) {
-  button.disabled = true;
-  button.classList.add("popup__save-button_disabled");
-}
-
-// функция кнопки загрузки
-function renderLoading(isLoading, button) {
-  if (isLoading) {
-    button.textContent = "Сохранение...";
-  } else {
-    submitButtonEdit.textContent = "Сохранить";
-    submitButtonAvatar.textContent = "Сохранить";
-    submitButtonCreateImage.textContent = "Создать";
-  }
 }
 
 // функция открытия попапа картинки

@@ -20,7 +20,7 @@ import {
   popupPlace,
   popupAvatar,
   submitButtonAvatar,
-} from "./utils.js";
+} from "./constants.js";
 import { enableValidation } from "./validate.js";
 
 import { createCard } from "./card.js";
@@ -31,9 +31,10 @@ import {
   closePopup,
   setUserInfo,
   setUserAvatar,
-  renderLoading,
-  disableButton,
 } from "./modal.js";
+
+import { renderLoading,
+  disableButton } from "./utils.js";
 
 import {
   getUserInfo,
