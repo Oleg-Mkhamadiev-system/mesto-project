@@ -25,15 +25,6 @@ import { enableValidation } from "../components/validate.js";
 
 import { createCard } from "./card.js";
 
-import {
-  openEditPopup,
-  openAddPopup,
-  openAddAvatarPopup,
-  closePopup,
-  setUserInfo,
-  setUserAvatar,
-} from "./modal.js";
-
 import { renderLoading, disableButton } from "../components/utils.js";
 
 import Api from "../components/api.js";
