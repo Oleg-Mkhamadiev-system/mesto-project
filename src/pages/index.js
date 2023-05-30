@@ -20,10 +20,11 @@ import {
   popupPlace,
   popupAvatar,
   buttonAvatar,
-} from "./constants.js";
-import { enableValidation } from "./validate.js";
+} from "../components/constants.js";
+import { enableValidation } from "../components/validate.js";
 
 import { createCard } from "./card.js";
+
 import {
   openEditPopup,
   openAddPopup,
@@ -33,15 +34,13 @@ import {
   setUserAvatar,
 } from "./modal.js";
 
-import { renderLoading, disableButton } from "./utils.js";
+import { renderLoading, disableButton } from "../components/utils.js";
 
-import {
-  getUserInfo,
-  getInitialCards,
-  createNewCard,
-  editUserAvatar,
-  setUserInfoProfile,
-} from "./api.js";
+import Api from "../components/api.js";
+import FormValidator from "../components/FormValidator.js";
+import Popup from "../components/Popup.js";
+import UserInfo from "../components/UserInfo.js";
+
 
 import "../pages/index.css";
 export let myId; // объявляю глобально переменную
