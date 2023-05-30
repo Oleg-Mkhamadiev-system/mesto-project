@@ -36,95 +36,109 @@ import UserInfo from "../components/UserInfo.js";
 import "../pages/index.css";
 export let myId; // объявляю глобально переменную
 
-// промис отрисовывает карточки с сервера
-// и данные пользователя
-Promise.all([getUserInfo(), getInitialCards()])
-  .then(([profileUser, initialCards]) => {
-    setUserInfo(profileUser);
-    setUserAvatar(profileUser);
-    myId = profileUser._id;
+// инстанс попапа формы редактирования профиля
+const popupEditProfile = new PopupWithForm({
+  popupSelector: popupProfile,
+  handleSubmitForm: handleSubmitEditForm,
+});
 
-    initialCards.forEach((result) => {
-      const newCard = createCard(
-        result.name,
-        result.link,
-        result._id,
-        result.owner._id,
-        result.likes,
-        myId
-      );
-      cardsContainer.prepend(newCard);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// слушатель открытия попапа редактирования профиля
+popupEditProfile.setEventListeners();
 
-function handleSubmitAddForm(evt) {
-  evt.preventDefault();
-  renderLoading(true, buttonCreateImage);
-  createNewCard({
-    name: namePlaceInput.value,
-    link: linkImageInput.value,
-  })
-    .then((data) => {
-      const newCard = createCard(
-        data.name,
-        data.link,
-        data._id,
-        data.owner._id,
-        data.likes,
-        data.owner._id
-      );
-      cardsContainer.prepend(newCard);
-      closePopup(popupPlace);
-      formNewCardElement.reset();
-      disableButton(buttonCreateImage);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      renderLoading(false, buttonCreateImage);
-    });
+// инстанс попапа формы добавления карточек
+const popupAddPlace = new PopupWithForm({
+  popupSelector: popupPlace,
+  handleSubmitForm: handleSubmitAddForm,
+});
+
+// слушатель открытия попапа добавления карточки
+popupAddPlace.setEventListeners();
+
+// инстанс редактипрования попапа аватара
+const popupAddAvatar = new PopupWithForm({
+  popupSelector: popupAvatar,
+  handleSubmitForm: handleSubmitAddAvatar,
+});
+
+// слушатель редактирования попапа аватара
+popupAddAvatar.setEventListeners();
+
+function handleCardDeleteClick(newCard) {
+  api
+      .deleteCard(newCard._id)
+      .then(() => {
+        newCard.handleCardDelete()
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 }
 
+// инстанс попапа картинки
+const popupZoomImages = new PopupWithImage(popupImages);
+
+// функция открытия попапа картинки
+function handleCardClick(name, link) {
+  popupZoomImages.open(name, link);
+}
+
+// слушатель открытия попапа картинки
+popupZoomImages.setEventListeners();
+
 // колбэк редактирования аватара
-async function handleSubmitAddAvatar(evt) {
-  evt.preventDefault();
-  renderLoading(true, buttonAvatar);
+async function handleSubmitAddAvatar(data) {
   try {
-    const profileUser = await editUserAvatar({
-      avatar: avatarImageInput.value,
+    const profileUser = await api.editUserAvatar({
+      avatar: data.avatar
     });
-    setUserAvatar(profileUser);
-    closePopup(popupAvatar);
-    disableButton(buttonAvatar);
+
+    userAboutInfo.setUserAvatar(profileUser);
   } catch (err) {
     console.log(err);
-  } finally {
-    renderLoading(false, buttonEdit);
+  }
+}
+
+// функция добавления карточек
+async function handleSubmitAddForm(data) {
+  try {
+    const newCard = await api.createNewCard({
+      name: data.name,
+      link: data.link
+    });
+
+    cardListSection.addItem(createCard(newCard));
+  } catch (err) {
+    console.log(err);
   }
 }
 
 // функция добавления информации о пользователе
-async function handleSubmitEditForm(evt) {
-  evt.preventDefault();
-  renderLoading(true, buttonEdit);
+async function handleSubmitEditForm(data) {
   try {
-    const profileUser = await setUserInfoProfile({
-      name: nameInput.value,
-      about: aboutInput.value,
+    const profileUser = await api.setUserInfoProfile({
+      name: data.name,
+      about: data.about
     });
-    setUserInfo(profileUser);
-    closePopup(popupProfile);
-    disableButton(buttonEdit);
+
+    userAboutInfo.setUserInfo(profileUser);
   } catch (err) {
     console.log(err);
-  } finally {
-    renderLoading(false, buttonEdit);
   }
 }
+
+// промис отрисовывает карточки с сервера
+// и данные пользователя
+Promise.all([api.getUserInfo(), api.getInitialCards()])
+  .then(([profileUser, initialCards]) => {
+    userAboutInfo.setUserInfo(profileUser);
+    userAboutInfo.setUserAvatar(profileUser);
+    userId = profileUser._id;
+
+    cardListSection.renderItems(initialCards);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 // обработчики на открытие попапов
 profileEditButton.addEventListener("click", openEditPopup);
