@@ -34,7 +34,7 @@ import UserInfo from "../components/UserInfo.js";
 
 
 import "../pages/index.css";
-export let myId; // объявляю глобально переменную
+export let userId; // объявляю глобально переменную
 
 // инстанс попапа формы редактирования профиля
 const popupEditProfile = new PopupWithForm({
@@ -125,6 +125,46 @@ async function handleSubmitEditForm(data) {
     console.log(err);
   }
 }
+
+function handleCardLike(newCard) {
+  if (newCard.like) {
+    api.deleteCardLike(newCard._id)
+    .then((data) => {
+      newCard.countLikes(data.likes);
+      // меняю состояние лайков
+      newCard.toggleLikeState();
+      newCard.removeLike();
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  } else {
+    api.addlikeCard(newCard._id)
+    .then((data) => {
+      newCard.setLike();
+      // вызываю метод плдсчитывающий количество лайков
+      newCard.countLikes(data.likes);
+      // меняю состояние лайков
+      newCard.toggleLikeState();
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+}
+
+// функция создания карточки
+function createCard(cardData) {
+  const newCard = new Card(
+    cardData,
+    ".template__elements",
+    handleCardClick,
+    handleCardDeleteClick,
+    handleCardLike,
+    userId);
+
+    return newCard.createCard();
+  }
 
 // промис отрисовывает карточки с сервера
 // и данные пользователя
