@@ -21,27 +21,50 @@ import {
   popupAvatar,
   buttonAvatar,
 } from "../components/constants.js";
-import { enableValidation } from "../components/validate.js";
-
-import { createCard } from "./card.js";
-
-import { renderLoading, disableButton } from "../components/utils.js";
 
 import Api from "../components/api.js";
 import FormValidator from "../components/FormValidator.js";
 import Popup from "../components/Popup.js";
 import UserInfo from "../components/UserInfo.js";
+import PopupWithForm from "../components/PopupWithForm.js";
+import PopupWithImage from "../components/PopupWithImage.js";
+import Card from "../components/Сard.js";
 
 
 import "../pages/index.css";
 export let userId; // объявляю глобально переменную
+
+// инстанс апи
+const api = new Api({
+  baseUrl: "https://nomoreparties.co/v1/plus-cohort-23",
+  headers: {
+    authorization: "8e6d025a-6054-4076-a0d4-21047d048aad",
+    "Content-Type": "application/json",
+  },
+})
+
+// инстанс информации о пользователе 
+const userAboutInfo = new UserInfo({
+  name: profileTitle,
+  about: profileSubtitle,
+  avatar: profileAvatar,
+})
+
+// инстанс класса добавления карточек в контейнер
+const cardListSection = new Section(
+  {
+    renderer: (items) => {
+      cardListSection.addItem(createCard(items));
+    },
+  },
+  containerSelector
+)
 
 // инстанс попапа формы редактирования профиля
 const popupEditProfile = new PopupWithForm({
   popupSelector: popupProfile,
   handleSubmitForm: handleSubmitEditForm,
 });
-
 // слушатель открытия попапа редактирования профиля
 popupEditProfile.setEventListeners();
 
@@ -84,6 +107,26 @@ function handleCardClick(name, link) {
 
 // слушатель открытия попапа картинки
 popupZoomImages.setEventListeners();
+
+// слушатель кнопки открытия попапа профиля
+profileEditButton.addEventListener("click", () => {
+  popupEditProfile.setInputValues(userAboutInfo.getUserInfo());
+  profileFormValidation.disableSubmitButton();
+  popupEditProfile.open();
+});
+
+// слушатель на кнопку попапа добавления карточки
+profileAddButton.addEventListener("click", () => {
+  cardFormValidation.disableSubmitButton();
+  popupAddPlace.open();
+});
+
+// слушатель кнопки открытия попапа с аватаром
+profileAvatarButton.addEventListener("click", () => {
+  popupAddAvatar.setInputValues(userAboutInfo.getUserInfo());
+  avatarFormValidation.disableSubmitButton();
+  popupAddAvatar.open();
+});
 
 // колбэк редактирования аватара
 async function handleSubmitAddAvatar(data) {
@@ -180,11 +223,6 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     console.log(err);
   });
 
-// обработчики на открытие попапов
-profileEditButton.addEventListener("click", openEditPopup);
-profileAddButton.addEventListener("click", openAddPopup);
-profileAvatarButton.addEventListener("click", openAddAvatarPopup);
-
 // обработчики на сабмитные кнопки
 formEditElement.addEventListener("submit", handleSubmitEditForm);
 formNewCardElement.addEventListener("submit", handleSubmitAddForm);
@@ -206,5 +244,20 @@ popupElementList.forEach((popupElement) => {
   });
 });
 
-// вызываю функцию валидации
-enableValidation(validationConfig);
+const profileFormValidation = new FormValidator(
+  validationConfig,
+  formEditElement
+);
+profileFormValidation.enableValidation();
+
+const cardFormValidation = new FormValidator(
+  validationConfig,
+  formNewCardElement
+);
+cardFormValidation.enableValidation();
+
+const avatarFormValidation = new FormValidator(
+  validationConfig,
+  formAvatarElement
+);
+avatarFormValidation.enableValidation();
