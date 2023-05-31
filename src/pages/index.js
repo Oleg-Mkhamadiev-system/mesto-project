@@ -12,23 +12,25 @@ import {
   nameInput,
   aboutInput,
   popupProfile,
-  buttonEdit,
-  buttonCreateImage,
   namePlaceInput,
   linkImageInput,
   avatarImageInput,
   popupPlace,
   popupAvatar,
-  buttonAvatar,
+  profileTitle,
+  profileSubtitle,
+  profileAvatar,
+  popupImages,
+  containerSelector
 } from '../utils/constants.js';
 
-import Api from "../components/api.js";
+import Api from "../components/Api.js";
 import FormValidator from "../components/FormValidator.js";
-import Popup from "../components/Popup.js";
 import UserInfo from "../components/UserInfo.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import Card from "../components/Сard.js";
+import Section from '../components/Section.js';
 
 
 import "../pages/index.css";
@@ -43,7 +45,7 @@ const api = new Api({
   },
 })
 
-// инстанс информации о пользователе 
+// инстанс информации о пользователе
 const userAboutInfo = new UserInfo({
   name: profileTitle,
   about: profileSubtitle,
@@ -144,7 +146,7 @@ async function handleSubmitAddAvatar(data) {
 // функция добавления карточек
 async function handleSubmitAddForm(data) {
   try {
-    const newCard = await api.createNewCard({
+    const newCard = await api.uploadCard({
       name: data.name,
       link: data.link
     });
@@ -171,7 +173,7 @@ async function handleSubmitEditForm(data) {
 
 function handleCardLike(newCard) {
   if (newCard.like) {
-    api.deleteCardLike(newCard._id)
+    api.deleteLike(newCard._id)
     .then((data) => {
       newCard.countLikes(data.likes);
       // меняю состояние лайков
@@ -182,7 +184,7 @@ function handleCardLike(newCard) {
       console.log(err);
     })
   } else {
-    api.addlikeCard(newCard._id)
+    api.addLike(newCard._id)
     .then((data) => {
       newCard.setLike();
       // вызываю метод плдсчитывающий количество лайков
@@ -211,7 +213,7 @@ function createCard(cardData) {
 
 // промис отрисовывает карточки с сервера
 // и данные пользователя
-Promise.all([api.getUserInfo(), api.getInitialCards()])
+Promise.all([api.getProfileInfo(), api.getInitialCards()])
   .then(([profileUser, initialCards]) => {
     userAboutInfo.setUserInfo(profileUser);
     userAboutInfo.setUserAvatar(profileUser);
@@ -222,22 +224,6 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
   .catch((err) => {
     console.log(err);
   });
-
-// обработчик на закрытие попапов по клику мыши на крестик
-popupButtonCloseList.forEach((btn) => {
-  const popup = btn.closest(".popup");
-  btn.addEventListener("click", () => closePopup(popup));
-});
-
-// перебираю коллекцию массива попапов методом forEach
-popupElementList.forEach((popupElement) => {
-  // навешиваю обработчик на закрытие попапов по клику на оверлэй
-  popupElement.addEventListener("click", (evt) => {
-    if (evt.target.classList.contains("popup__overlay")) {
-      closePopup(popupElement);
-    }
-  });
-});
 
 const profileFormValidation = new FormValidator(
   validationConfig,
