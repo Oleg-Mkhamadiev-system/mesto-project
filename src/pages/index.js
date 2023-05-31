@@ -20,7 +20,7 @@ import {
   popupPlace,
   popupAvatar,
   buttonAvatar,
-} from "../components/constants.js";
+} from '../utils/constants.js';
 
 import Api from "../components/api.js";
 import FormValidator from "../components/FormValidator.js";
