@@ -223,11 +223,6 @@ Promise.all([api.getUserInfo(), api.getInitialCards()])
     console.log(err);
   });
 
-// обработчики на сабмитные кнопки
-formEditElement.addEventListener("submit", handleSubmitEditForm);
-formNewCardElement.addEventListener("submit", handleSubmitAddForm);
-formAvatarElement.addEventListener("submit", handleSubmitAddAvatar);
-
 // обработчик на закрытие попапов по клику мыши на крестик
 popupButtonCloseList.forEach((btn) => {
   const popup = btn.closest(".popup");
