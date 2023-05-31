@@ -1,47 +1,45 @@
 export default class Api {
   constructor({ baseUrl, headers }) {
-    this._baseUrl = baseUrl;
-    this._headers = headers;
+    this._baseUrl = baseUrl
+    this._headers = headers
   }
 
-  _checkStatusResponse(res) {
-    return res.ok
-      ? res.json()
-      : Promise.reject(`Ошибка в ${res.status}`);
+  _checkResponse(res) {
+    return res.ok ? res.json() : Promise.reject(`Ошибка в ${res.status}`)
   }
 
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: "GET",
       headers: this._headers,
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
-  getUserInfo() {
+  getProfileInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: this._headers,
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
   setUserInfoProfile(data) {
     return fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH", // метод для частичного обновления ресурса на сервере
+      method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
         about: data.about
       }),
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
-  createNewCard(data) {
+  uploadCard(data) {
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
       headers: this._headers,
@@ -49,18 +47,18 @@ export default class Api {
         name: data.name,
         link: data.link,
       })
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
-  addlikeCard(_id) {
+  addLike(_id) {
     return fetch(`${this._baseUrl}/cards/${_id}/likes`, {
       method: "PUT",
       headers: this._headers,
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
   deleteCard(_id) {
@@ -68,8 +66,8 @@ export default class Api {
       method: "DELETE",
       headers: this._headers,
     }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+      return this._checkResponse(res)
+    })
   }
 
   editUserAvatar(data) {
@@ -79,17 +77,17 @@ export default class Api {
       body: JSON.stringify({
         avatar: data.avatar,
       }),
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 
-  deleteCardLike(_id) {
+  deleteLike(_id) {
     return fetch(`${this._baseUrl}/cards/${_id}/likes`, {
       method: 'DELETE',
       headers: this._headers,
-    }).then((res) => {
-      return this._checkStatusResponse(res);
-    });
+    }).then(res => {
+      return this._checkResponse(res)
+    })
   }
 }
