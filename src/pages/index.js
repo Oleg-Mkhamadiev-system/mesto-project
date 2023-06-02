@@ -113,12 +113,14 @@ popupZoomImages.setEventListeners();
 // слушатель кнопки открытия попапа профиля
 profileEditButton.addEventListener("click", () => {
   popupEditProfile.setInputValues(userAboutInfo.getUserInfo());
+  profileFormValidation.resetValidation();
   profileFormValidation.disableSubmitButton();
   popupEditProfile.open();
 });
 
 // слушатель на кнопку попапа добавления карточки
 profileAddButton.addEventListener("click", () => {
+  cardFormValidation.resetValidation();
   cardFormValidation.disableSubmitButton();
   popupAddPlace.open();
 });
@@ -126,6 +128,7 @@ profileAddButton.addEventListener("click", () => {
 // слушатель кнопки открытия попапа с аватаром
 profileAvatarButton.addEventListener("click", () => {
   popupAddAvatar.setInputValues(userAboutInfo.getUserInfo());
+  avatarFormValidation.resetValidation();
   avatarFormValidation.disableSubmitButton();
   popupAddAvatar.open();
 });
