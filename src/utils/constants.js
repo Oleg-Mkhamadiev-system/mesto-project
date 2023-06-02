@@ -1,4 +1,4 @@
-// попапы
+// селекторы попапов
 export const popupProfile = document.querySelector('.popup_content_profile');
 export const popupPlace = document.querySelector('.popup_content_elements');
 export const popupImages = document.querySelector('.popup_content_images');
@@ -10,7 +10,7 @@ export const profileEditButton = document.querySelector('.profile__edit-button')
 export const profileAddButton = document.querySelector('.profile__add-button');
 export const profileAvatarButton = document.querySelector('.profile__avatar-button');
 
-// коллекция кнопок закрытия попапов по крестику
+// все попапы закрытия
 export const popupButtonCloseList = document.querySelectorAll('.popup__close-button');
 
 // форма добавления данных
@@ -22,7 +22,7 @@ export const profileTitle = document.querySelector('.profile__title');
 export const profileSubtitle = document.querySelector('.profile__subtitle');
 export const profileAvatar = document.querySelector('.profile__avatar');
 
-// форма добавления новых карточек
+// попап формы добавления карточки
 export const formNewCardElement = popupPlace.querySelector('.popup__form');
 export const buttonCreateImage = formNewCardElement.querySelector('.popup__save-button');
 export const formAvatarElement = popupAvatar.querySelector('.popup__form');
@@ -40,14 +40,14 @@ export const cardElement = document.querySelector('.elements__card');
 export const popupImageContent = document.querySelector('.popup__image');
 export const popupFigcaption = document.querySelector('.popup__figcaption');
 
-// коллекция попапов
+// все попапы
 export const popupElementList = Array.from(document.querySelectorAll('.popup'));
 
-// создаю пустой контейнер, чтобы вложить карточки в секцию elements
+// пустой контейнер , в который мы будем вставлять карточки
 export const containerSelector = '.elements__cards';
 export const cardsContainer = document.querySelector('.elements__cards');
 
-// объект валидации
+// конфиг валидации
 export const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
